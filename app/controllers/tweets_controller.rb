@@ -1,3 +1,4 @@
+require 'pry'
 class TweetController < ApplicationController
 
   get "/tweets" do
@@ -10,7 +11,11 @@ class TweetController < ApplicationController
   end
 
   get "/tweets/new" do
-    erb :"posts/new"
+    if logged_in?
+      erb :"posts/new"
+    else
+      redirect to "/login"
+    end
   end
 
   get "/tweets/:id" do
@@ -19,6 +24,7 @@ class TweetController < ApplicationController
   end
 
   post "/tweet" do
+    binding.pry
     if !params[:content].nil?
       tweet = Tweet.create(params[:content])
       tweet.user_id = current_user.id

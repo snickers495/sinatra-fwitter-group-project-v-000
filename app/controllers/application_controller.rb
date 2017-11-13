@@ -64,6 +64,11 @@ class ApplicationController < Sinatra::Base
 	get "/failure" do
 		erb :failure
 	end
+  
+  get "/users/:slug" do
+    @user = User.find_by_slug(params[:slug])
+    erb :"users/show"
+  end
 
   helpers do
 		def logged_in?

@@ -1,12 +1,13 @@
-require './config/environment'
 
+require 'pry'
+require './config/environment'
 class ApplicationController < Sinatra::Base
 
   configure do
     set :public_folder, 'public'
     set :views, 'app/views'
     enable :sessions
-		set :session_secret, "password_security"
+		set :session_secret, "secret"
   end
 
   get "/" do
@@ -14,16 +15,21 @@ class ApplicationController < Sinatra::Base
 	end
 
 	get "/signup" do
-		erb :signup
+    binding.pry
+    if logged_in?
+      redirect to "/tweets"
+		else
+      erb :signup
+    end
 	end
 
 	post "/signup" do
-    if !params[:user].include?(nil)
-		    user = User.create(params[:user])
-        session[:user_id] = user.id
-        redirect "/tweets"
+    if params.values.any?{|v| v.nil? || v.length == 0}
+      redirect to "/signup"
     else
-      redirect "/signup"
+      user = User.create(username: params[:username], email: params[:email], password: params[:password])
+      session[:user_id] = user.id
+      redirect to "/tweets"
     end
 	end
 
@@ -34,10 +40,10 @@ class ApplicationController < Sinatra::Base
 	post "/login" do
 		user = User.find_by(username: params[:username])
     if user && user.authenticate(params[:password])
-        session[:user_id] = user.id
-        redirect "/success"
+      session[:user_id] = user.id
+      redirect "/success"
     else
-        redirect "/failure"
+      redirect "/failure"
     end
 	end
 
@@ -57,7 +63,6 @@ class ApplicationController < Sinatra::Base
 		session.clear
 		redirect "/"
 	end
-
 
   helpers do
 		def logged_in?

@@ -1,0 +1,5 @@
+<h1>Your Tweets</h1>
+
+<% User.tweets.each do |t| %>
+<p><a href="/tweets/<%=t.id%>"><%=t.content%></a></p> 
+<%end%>

@@ -20,7 +20,8 @@ class ApplicationController < Sinatra::Base
 	post "/signup" do
     if !params[:user].include?(nil)
 		    user = User.create(params[:user])
-        redirect "/login"
+        session[:user_id] = user.id
+        redirect "/tweets"
     else
       redirect "/signup"
     end
@@ -42,7 +43,7 @@ class ApplicationController < Sinatra::Base
 
 	get "/success" do
 		if logged_in?
-			erb :"tweets"
+			redirect to "/tweets"
 		else
 			redirect to "/login"
 		end

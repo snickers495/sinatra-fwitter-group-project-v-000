@@ -2,6 +2,7 @@ class UserController < ApplicationController
 
   get "/tweets" do
     if logged_in?
+      @user = current_user
       erb :"posts/index"
     end
   end

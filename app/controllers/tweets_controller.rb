@@ -1,9 +1,11 @@
-class UserController < ApplicationController
+class TweetController < ApplicationController
 
   get "/tweets" do
     if logged_in?
       @user = current_user
       erb :"posts/index"
+    else
+      redirect to "/login"
     end
   end
 
